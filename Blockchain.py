@@ -1,3 +1,6 @@
+'''
+    Blockchain module
+'''
 from Block import Block
 
 class Blockchain:

@@ -1,3 +1,6 @@
+'''
+    Block module
+'''
 import hashlib
 
 class Block:

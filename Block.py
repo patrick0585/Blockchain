@@ -1,40 +1,28 @@
 '''
-    Block module
+    Simple Block class
 '''
 import hashlib
+import json
 
 class Block:
-    prev_hash = None
-    nonce = -1
-    data = None
-    current_hash = None
 
-    def __init__(self, prev_hash, data):
-        self.prev_hash = prev_hash
-        self.data = data
+    def __init__(self, index, transactions, timestamp, previous_hash, nonce=0):
+        self.hash = ""
+        self.index = index
+        self.transactions = transactions
+        self.timestamp = timestamp
+        self.previous_hash = previous_hash
+        self.nonce = nonce
 
-    def __repr__(self):
-        return "Block: {0} (prev. {1})".format(
-            self.current_hash,
-            self.prev_hash
-        )
-    
-    @property
-    def block_string(self):
-        return "{0}-{1}-{2}".format(
-            self.prev_hash,
-            self.data,
-            self.nonce
-        )
-    
-    def hash(self):
-        return hashlib.sha256(bytes(self.block_string,"utf-8")).hexdigest()
+    def compute_hash(self):
+        block_string = json.dumps(self.__dict__, sort_keys=True)
+        return hashlib.sha256(block_string.encode()).hexdigest()
 
-    def mine(self, difficulty):
+    def proof_of_work(self, difficulty):
         found = False
         while not found:
             self.nonce += 1
-            self.current_hash = self.hash()
-            if self.current_hash[0:difficulty] == "0" * difficulty:
+            self.hash = self.compute_hash()
+            if self.hash[0:difficulty] == "0" * difficulty:
                 found = True
             
